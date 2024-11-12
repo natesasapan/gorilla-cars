@@ -1,9 +1,9 @@
 import CarCard from "../components/Listing/CarCard";
 
 const carData = [
-  { name: "Ford Fiesta", price: "$20/day", image: "/images/ford-fiesta.jpg" },
-  { name: "BMW M2", price: "$80/day", image: "/images/bmw-m2.jpg" },
-  { name: "Camaro SS", price: "$120/day", image: "/images/camaro-ss.jpg" },
+  { name: "Ford Fiesta", price: "$20/day", image: "/images/ford.png" },
+  { name: "BMW M2", price: "$80/day", image: "/images/m2.png" },
+  { name: "Camaro SS", price: "$120/day", image: "/images/camaro.png" },
 ];
 
 export default function Home() {
