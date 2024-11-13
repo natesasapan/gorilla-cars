@@ -39,20 +39,22 @@ export default function Home() {
   const router = useRouter();
 
   const handleLogout = () => {
-    // Optional: Add any logout logic here
-    localStorage.setItem('isAuthenticated', 'false'); // Example usage of localStorage
 
-    // Redirect to landing page
+    localStorage.setItem('isAuthenticated', 'false');
+
     router.push("/");
   };
 
+  /*
   useEffect(() => {
-    // This will run only on the client side
+
     if (localStorage.getItem('isAuthenticated') !== 'true') {
-      router.push('/'); // Redirect to login if not authenticated
+      router.push('/');
     }
   }, [router]);
 
+  */
+ 
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white p-8">
       <div className="flex justify-end w-full mb-4">
