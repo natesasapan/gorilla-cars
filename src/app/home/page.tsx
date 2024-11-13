@@ -1,4 +1,8 @@
-// src/pages/index.tsx
+// src/app/home/page.tsx
+'use client';
+
+import React, { useEffect } from 'react';
+import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import Image, { StaticImageData } from "next/image";
 import fordImage from "../assets/images/ford.png";
 import m2Image from "../assets/images/m2.png";
@@ -32,21 +36,45 @@ const CarCard = ({ name, price, image }: { name: string; price: string; image: S
 };
 
 export default function Home() {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // Optional: Add any logout logic here
+    localStorage.setItem('isAuthenticated', 'false'); // Example usage of localStorage
+
+    // Redirect to landing page
+    router.push("/");
+  };
+
+  useEffect(() => {
+    // This will run only on the client side
+    if (localStorage.getItem('isAuthenticated') !== 'true') {
+      router.push('/'); // Redirect to login if not authenticated
+    }
+  }, [router]);
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black text-white p-8">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-blue-400 mb-8">Best deals out there</h1>
-        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-          {carData.map((car, index) => (
-            <CarCard 
-              key={index} 
-              name={car.name} 
-              price={car.price} 
-              image={car.image} 
-            />
-          ))}
-        </div>
+    <div className="flex flex-col items-center min-h-screen bg-black text-white p-8">
+      <div className="flex justify-end w-full mb-4">
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded transition"
+        >
+          Logout
+        </button>
+      </div>
+      <h1 className="text-4xl font-bold text-blue-400 mb-8">Best deals out there</h1>
+      <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+        {carData.map((car, index) => (
+          <CarCard 
+            key={index} 
+            name={car.name} 
+            price={car.price} 
+            image={car.image} 
+          />
+        ))}
       </div>
     </div>
   );
 }
+
