@@ -1,12 +1,14 @@
 // src/app/home/page.tsx
 'use client';
 
-import React, { useEffect } from 'react';
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import React from 'react';
+import { useRouter } from "next/navigation";
+import Link from 'next/link';
 import Image, { StaticImageData } from "next/image";
 import fordImage from "../assets/images/ford.png";
 import m2Image from "../assets/images/m2.png";
 import camaroImage from "../assets/images/camaro.png";
+import gorillaLogo from "../assets/images/gorilla.png";
 
 const carData = [
   { name: "Ford Fiesta", price: "$20/day", image: fordImage },
@@ -24,7 +26,7 @@ const CarCard = ({ name, price, image }: { name: string; price: string; image: S
         height={300} 
         className="w-full h-48 object-cover rounded-t-lg" 
       />
-      <div className="p-4 bg-blue-700">
+      <div className="p-4 bg-orange-700">
         <h2 className="text-2xl font-bold text-white mb-2">{name}</h2>
         <p className="text-lg font-semibold text-yellow-400 mb-4">From {price}</p>
         <button className="bg-yellow-500 text-black font-semibold px-6 py-2 rounded-full hover:bg-yellow-400 transition">
@@ -39,38 +41,34 @@ export default function Home() {
   const router = useRouter();
 
   const handleLogout = () => {
-
     localStorage.setItem('isAuthenticated', 'false');
-
     router.push("/");
   };
 
-  /*
-  useEffect(() => {
-
-    if (localStorage.getItem('isAuthenticated') !== 'true') {
-      router.push('/');
-    }
-  }, [router]);
-
-  */
- 
-  //
   return (
-    <div className="flex flex-col items-center min-h-screen bg-black text-white p-8">
-      <div className="flex justify-end w-full mb-4">
-
-
-
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded transition"
-        >
-          Logout
-        </button>
+    <div className="relative flex flex-col items-center min-h-screen bg-black text-white p-8">
+      
+      {/* Header with Gorilla Cars Title and Links */}
+      <div className="w-full flex items-center justify-center relative mb-8">
+        <h1 className="text-3xl font-bold text-orange-500">Gorilla Cars</h1>
+        
+        {/* Top-right links */}
+        <div className="absolute right-8 flex space-x-4">
+          <Link href="/addItem" className="text-orange-400 text-med font-semibold hover:underline">
+            Add/Remove Items
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="text-orange-400 text-med font-semibold hover:underline"
+          >
+            Logout
+          </button>
+        </div>
       </div>
-      <h1 className="text-4xl font-bold text-blue-400 mb-8">Best deals out there</h1>
-      <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+      
+      <h2 className="text-4xl font-bold text-gray-400 mb-8">Best deals out there!</h2>
+      
+      <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto mb-8">
         {carData.map((car, index) => (
           <CarCard 
             key={index} 
