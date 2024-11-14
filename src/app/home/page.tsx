@@ -55,9 +55,13 @@ export default function Home() {
 
   */
  
+  //
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white p-8">
       <div className="flex justify-end w-full mb-4">
+
+
+
         <button
           onClick={handleLogout}
           className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded transition"
