@@ -6,10 +6,8 @@ export default function CarRentalForm() {
     const router = useRouter();
 
     const handleLogout = () => {
-  
-      localStorage.setItem('isAuthenticated', 'false');
-  
-      router.push("/");
+          
+      router.push("/home");
     };
 
     return (
