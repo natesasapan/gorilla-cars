@@ -21,6 +21,38 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## create a new branch from the main
+on terminal..
+```bash
+git checkout main # to check out the main branch
+git pull origin main # optional: pull lastest changes
+git checkout -b your-branch-name # create a new branch
+git branch # confirm the branch
+```
+
+## commit changes
+on terminal...
+```bash
+git add . # to stage your changes
+git commit -m "Your commit message here" # commit your changes
+git push -u origin your-branch-name # "your-branch-name" should be replaced with the branch you are currently on
+```
+
+Next steps to take:
+Open Github: gorilla-cars
+Click: Compare & pull request (should be in green box)
+Write a description about your task
+Hit the "Create a pull request"
+
+## continue on the same branch after pushing
+after making any changes
+on terminal...
+```bash
+git add .
+git commit -m "Follow-up changes or new feature part"
+git push # push again
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
