@@ -14,7 +14,7 @@ import Link from 'next/link';
             </h1>
             
             <p className="text-orange-500/90 text-lg mb-8">
-              Welcome to Gorilla Cars, where we go bananas for automotive excellence! Our fleet of vehicles swings from compact cars to luxury SUVs, all maintained with the strength and precision of a silverback. Unlike our primate namesakes, we don&apos;t monkey around with hidden fees &#45; our prices are as straightforward as a gorilla&apos;s handshake (which we don't recommend). Let&apos;s go ape over your next rental!
+              Welcome to Gorilla Cars, where we go bananas for automotive excellence! Our fleet of vehicles swings from compact cars to luxury SUVs, all maintained with the strength and precision of a silverback. Unlike our primate namesakes, we don&apos;t monkey around with hidden fees &#45; our prices are as straightforward as a gorilla&apos;s handshake (which we don&apos;t recommend). Let&apos;s go ape over your next rental!
             </p>
   
             <div className="flex gap-4">

@@ -2,74 +2,76 @@
 import { NextResponse } from 'next/server';
 import connectMongoDB from '@/libs/mongodb';
 import { User } from '@/models/userSchema';
-import { MongoClient } from 'mongodb'
+import { NextRequest } from 'next/server';
 
-const uri = process.env.MONGODB_URI as string;
-const client = new MongoClient(uri);
-
-/*
-async function run () {
-    try {
-        const database = client.db('creds');
-        const creds = database.collection('creds');
-        let u = 'admin';
-        let p = 'pass1';
-        const query = { user: u, pass: p };
-        const user = await creds.findOne(query);
-
-        if (user != null) {
-            console.log(user)
-        }
-
-        if (user == null) {
-            console.log("no response")
-        }
-      } finally {
-        // Ensures that the client will close when you finish/error
-        await client.close();
-      }
+//checking to see if the uri is correct
+const uri = process.env.MONGODB_URI;
+if (!uri) {
+  throw new Error('MONGODB_URI environment variable is not defined');
 }
 
-run()
-*/
-
-export async function POST(request) {
+//authentication function
+export async function POST(request: NextRequest) {
     try {
-        const body = await request.json();
-        console.log("Received data:", body); // Debug log
-        const database = client.db('creds');
-        const creds = database.collection('creds');
-        let p = body.password;
-        let u = body.username;
-        const query = { user: u, pass: p };
-        const user = await creds.findOne(query);
+        //checking mongoDB connection
+        await connectMongoDB();
+  
+        //receiving argument from login
+        const {username , password} = await request.json();
+        //debugging log
+        //console.log("Received data:", username);
+        
+        //using UserSchema to find the username in mongodb
+        const userExists = await User.findOne({username: username});
 
-        let bool = false;
-
-        if (user != null) {
-            bool = true;
-            console.log("password accepted")
-        }
-
-        if (user == null) {
-            bool = false;
-            console.log("password denied")
+        //if username doesn't exist, deny access
+        if (userExists == null) {
+          return NextResponse.json({ 
+            success: false,
+            message: "username or password is incorrect" 
+          });
+        } else { // user exists, so check password
+          const userPass = userExists.toObject().password;
+          if (password == userPass) { //password matches, so we return success
+            return NextResponse.json({ 
+              success: true,
+              message: "User is found" 
+            });
+          } else if (password != userPass) { // user exists, but password doesn't match. deny access
+            return NextResponse.json({ 
+              success: false,
+              message: "username or password is incorrect" 
+            });
+          }
         }
                 
-        // Return proper JSON response
-        return NextResponse.json({ 
-            success: bool, 
-            message: "Route is working!" 
-        });
     } catch (error) {
         // If something goes wrong, still return proper JSON
+        console.error("Error details:", error);
         return NextResponse.json({ 
             success: false, 
-            error: "Something went wrong" 
+            error: "Something went wrong",
         }, { status: 400 });
     }
+  
+  }
 
-}
+//was used to test mongo, unused now
+export async function GET() {
+    try {
+      await connectMongoDB();
+      const items = await User.find();
+      return NextResponse.json({ items })
+    } catch(error) {
+      console.error("Error details:", error);
+      // Ensures that the client will close when you finish/error
+      return NextResponse.json({ 
+        error: "Something went wrong" 
+      }, { status: 400 });
+    }
+  }
+
+
 
 /*
 export async function POST(request: NextRequest) {

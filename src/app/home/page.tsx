@@ -8,7 +8,7 @@ import Image, { StaticImageData } from "next/image";
 import fordImage from "../assets/images/ford.png";
 import m2Image from "../assets/images/m2.png";
 import camaroImage from "../assets/images/camaro.png";
-import gorillaLogo from "../assets/images/gorilla.png";
+//import gorillaLogo from "../assets/images/gorilla.png";
 
 const carData = [
   { name: "Ford Fiesta", price: "$20/day", image: fordImage },
