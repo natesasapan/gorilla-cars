@@ -1,7 +1,7 @@
 // app/api/login/route.ts
 import { NextResponse } from 'next/server';
 import connectMongoDB from '@/libs/mongodb';
-import { User } from '@/models/userSchema';
+import { Item } from '@/models/itemSchema';
 import { NextRequest } from 'next/server';
 
 //checking to see if the uri is correct
@@ -12,30 +12,34 @@ if (!uri) {
 
 //authentication function
 export async function POST(request: NextRequest) {
-    try {
-        console.log(request);
-        // in progess
-        return NextResponse.json({ 
-            success: true, 
-            error: "In progress" 
-        }, { status: 201 });
-                
-    } catch (error) {
-        console.error("Error details:", error);
-        // in progress
-        return NextResponse.json({ 
-            success: false, 
-            error: "Something went wrong",
-        }, { status: 400 });
-    }
-  
+  try {
+      //checking mongoDB connection
+      await connectMongoDB();
+
+      //receiving argument from addItem
+      const {make, model, year, price, startDate, endDate, imageLink} = await request.json();
+      //debugging log
+
+      await Item.create({make, model, year, price, startDate, endDate, imageLink});
+
+      return NextResponse.json({message: "items added successfully!"}, {status: 201});
+              
+  } catch (error) {
+      // If something goes wrong, still return proper JSON
+      console.error("Error details:", error);
+      return NextResponse.json({ 
+          success: false, 
+          error: "Something went wrong",
+      }, { status: 400 });
   }
+
+}
 
 //will be implemented soon
 export async function GET() {
     try {
       await connectMongoDB();
-      const items = await User.find();
+      const items = await Item.find();
       return NextResponse.json({ items })
     } catch(error) {
       console.error("Error details:", error);
@@ -45,3 +49,16 @@ export async function GET() {
       }, { status: 400 });
     }
   }
+
+
+/*
+{
+  "make": "Toyota",
+  "model": "Camry",
+  "year": "2023",
+  "price": "75.99",
+  "startDate": "2024-11-25",
+  "endDate": "2024-12-02",
+  "imageLink": "https://example.com/images/toyota-camry-2023.jpg"
+}
+*/

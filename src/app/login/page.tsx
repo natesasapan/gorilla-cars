@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 
-export default function Signup() {
+export default function Login() {
     const [username, setUsername] = useState(""); 
     const [password, setPassword] = useState("");
     const router = useRouter();

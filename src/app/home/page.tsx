@@ -54,8 +54,8 @@ export default function Home() {
         
         {/* Top-right links */}
         <div className="absolute right-8 flex space-x-4">
-          <Link href="/addItem" className="text-orange-400 text-med font-semibold hover:underline">
-            Add/Remove Items
+          <Link href="/item" className="text-orange-400 text-med font-semibold hover:underline">
+            Add Items
           </Link>
           <button
             onClick={handleLogout}
@@ -81,4 +81,3 @@ export default function Home() {
     </div>
   );
 }
-

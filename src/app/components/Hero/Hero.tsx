@@ -32,6 +32,7 @@ import Link from 'next/link';
             <Image 
                 src={gorillaImage} 
                 alt="Gorilla in an orange car"
+                priority={true}
                 width={500}
                 height={500}
             />
