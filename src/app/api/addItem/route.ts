@@ -49,16 +49,3 @@ export async function GET() {
       }, { status: 400 });
     }
   }
-
-
-/*
-{
-  "make": "Toyota",
-  "model": "Camry",
-  "year": "2023",
-  "price": "75.99",
-  "startDate": "2024-11-25",
-  "endDate": "2024-12-02",
-  "imageLink": "https://example.com/images/toyota-camry-2023.jpg"
-}
-*/
