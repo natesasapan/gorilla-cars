@@ -14,6 +14,11 @@ interface Car {
   name: string;
   price: string;
   image: string | StaticImageData;
+  make?: string; 
+  model?: string;
+  year?: string; 
+  startDate?: string; 
+  endDate?: string; 
 }
 
 
@@ -160,8 +165,10 @@ export default function Home() {
     const [updatedCar, setUpdatedCar] = useState<Car>(car);
   
     const handleChange = (field: keyof Car, value: string) => {
-      setUpdatedCar(prev => ({ ...prev, [field]: value }));
+      setUpdatedCar((prev) => ({ ...prev, [field]: value }));
     };
+
+    
     
   
   
@@ -169,43 +176,59 @@ export default function Home() {
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded shadow-lg w-1/3">
           <h2 className="text-xl font-bold mb-4">Edit Car</h2>
+    
+          {/* Name Input */}
+          <label htmlFor="car-name" className="block mb-2 font-semibold">Name (Make Model):</label>
           <input
+            id="car-name"
             type="text"
             value={updatedCar.name}
             onChange={(e) => handleChange('name', e.target.value)}
             className="border p-2 mb-4 w-full"
-            placeholder="Name (Make Model)"
+            placeholder="Name (e.g., Toyota Corolla)"
           />
+    
+          {/* Price Input */}
+          <label htmlFor="car-price" className="block mb-2 font-semibold">Price Per Day:</label>
           <input
+            id="car-price"
             type="text"
             value={updatedCar.price}
             onChange={(e) => handleChange('price', e.target.value)}
             className="border p-2 mb-4 w-full"
-            placeholder="Price (e.g. $80/day)"
+            placeholder="Price (e.g., $80/day)"
           />
+    
+          {/* Image URL Input */}
+          <label htmlFor="car-image" className="block mb-2 font-semibold">Image URL:</label>
           <input
+            id="car-image"
             type="text"
             value={typeof updatedCar.image === 'string' ? updatedCar.image : updatedCar.image.src}
             onChange={(e) => handleChange('image', e.target.value)}
             className="border p-2 mb-4 w-full"
             placeholder="Image URL"
           />
-          <button
-            onClick={() => onSave(updatedCar)}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mr-2"
-          >
-            Save
-          </button>
-          <button
-            onClick={onClose}
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-          >
-            Cancel
-          </button>
+    
+          {/* Action Buttons */}
+          <div className="flex justify-end space-x-4">
+            <button
+              onClick={() => onSave(updatedCar)}
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              Save
+            </button>
+            <button
+              onClick={onClose}
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     );
-  };
+  }
   
   
   
@@ -237,9 +260,10 @@ export default function Home() {
             price={car.price}
             image={car.image}
             onDelete={() => deleteCar(car.id)}
+            onEdit={() => openEditModal(car)}
           />
         ))}
       </div>
     </div>
   );
-}
+};
