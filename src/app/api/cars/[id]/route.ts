@@ -1,22 +1,21 @@
-// src/app/api/cars/[id]/route.ts
+import { NextRequest, NextResponse } from "next/server";
 import connectMongoDB from "@/libs/mongodb";
-import { Item } from "@/models/itemSchema"; 
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import { Item } from "@/models/itemSchema";
 import mongoose from "mongoose";
 
+// Update the type to match Next.js route handler requirements
+type Props = {
+  params: {
+    id: string;
+  };
+};
 
-interface RouteParams {
-  params: { id: string };
-}
-
-// GET: Fetch a specific car by ID
-export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+// Update the function signatures to use the correct type
+export async function GET(request: NextRequest, props: Props) {
+  const { id } = props.params;
   await connectMongoDB();
-
   try {
-    const car = await Item.findOne({ _id: id }); // Fetch the car by ID
+    const car = await Item.findOne({ _id: id });
     if (!car) {
       return NextResponse.json({ message: "Car not found" }, { status: 404 });
     }
@@ -27,9 +26,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PUT: Update a car by ID
-export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+export async function PUT(request: NextRequest, props: Props) {
+  const { id } = props.params;
   const {
     make,
     model,
@@ -39,16 +37,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     endDate,
     imageLink,
   } = await request.json();
-
   await connectMongoDB();
-
   try {
     const updatedCar = await Item.findByIdAndUpdate(
       id,
       { make, model, price, year, startDate, endDate, imageLink },
-      { new: true } // Return the updated document
+      { new: true }
     );
-
     if (!updatedCar) {
       return NextResponse.json({ message: "Car not found" }, { status: 404 });
     }
@@ -59,18 +54,14 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE: Remove a car by ID
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-
+export async function DELETE(request: NextRequest, props: Props) {
+  const { id } = props.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return NextResponse.json({ message: "Invalid ID format" }, { status: 400 });
   }
-
   await connectMongoDB();
-
   try {
-    const deletedCar = await Item.findByIdAndDelete(id); // Delete car by ID
+    const deletedCar = await Item.findByIdAndDelete(id);
     if (!deletedCar) {
       return NextResponse.json({ message: "Car not found" }, { status: 404 });
     }
@@ -80,5 +71,3 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: "Failed to delete car" }, { status: 500 });
   }
 }
-
-

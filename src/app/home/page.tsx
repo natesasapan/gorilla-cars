@@ -2,12 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import CarCard from '../components/Listing/CarCard';
-import fordImage from "../assets/images/ford.png";
-import m2Image from "../assets/images/m2.png";
-import camaroImage from "../assets/images/camaro.png";
 import { StaticImageData } from 'next/image';
 import { useRouter } from "next/navigation"
-import Link from 'next/link';
 
 interface Car {
   id: string;
@@ -25,10 +21,21 @@ interface Car {
 export default function Home() {
 
   const router = useRouter();
-  const handleLogout = () => {
-    localStorage.setItem('isAuthenticated', 'false');
-    router.push("/");
-  };
+  const handleLogout = async () => {
+    try {
+        const response = await fetch('/api/logout', {
+            method: 'POST',
+        });
+
+        if (response.ok) {
+            router.push('/login');
+        } else {
+            console.error('Logout failed');
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
+};
 
 
 

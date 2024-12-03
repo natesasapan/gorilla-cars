@@ -3,101 +3,78 @@ import { NextResponse } from 'next/server';
 import connectMongoDB from '@/libs/mongodb';
 import { User } from '@/models/userSchema';
 import { NextRequest } from 'next/server';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-//checking to see if the uri is correct
-const uri = process.env.MONGODB_URI;
-if (!uri) {
-  throw new Error('MONGODB_URI environment variable is not defined');
+if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is not defined');
 }
 
-//authentication function
-export async function POST(request: NextRequest) {
-    try {
-        //checking mongoDB connection
-        await connectMongoDB();
-  
-        //receiving argument from login
-        const {username , password} = await request.json();
-        //debugging log
-        //console.log("Received data:", username);
-        
-        //using UserSchema to find the username in mongodb
-        const userExists = await User.findOne({username: username});
-
-        //if username doesn't exist, deny access
-        if (userExists == null) {
-          return NextResponse.json({ 
-            success: false,
-            message: "username or password is incorrect" 
-          });
-        } else { // user exists, so check password
-          const userPass = userExists.toObject().password;
-          if (password == userPass) { //password matches, so we return success
-            return NextResponse.json({ 
-              success: true,
-              message: "User is found" 
-            });
-          } else if (password != userPass) { // user exists, but password doesn't match. deny access
-            return NextResponse.json({ 
-              success: false,
-              message: "username or password is incorrect" 
-            });
-          }
-        }
-                
-    } catch (error) {
-        // If something goes wrong, still return proper JSON
-        console.error("Error details:", error);
-        return NextResponse.json({ 
-            success: false, 
-            error: "Something went wrong",
-        }, { status: 400 });
-    }
-  
-  }
-
-//was used to test mongo, unused now
-export async function GET() {
-    try {
-      await connectMongoDB();
-      const items = await User.find();
-      return NextResponse.json({ items })
-    } catch(error) {
-      console.error("Error details:", error);
-      // Ensures that the client will close when you finish/error
-      return NextResponse.json({ 
-        error: "Something went wrong" 
-      }, { status: 400 });
-    }
-  }
-
-
-
-/*
 export async function POST(request: NextRequest) {
     try {
         await connectMongoDB();
-        
-        // Get username and password from request body
+ 
         const { username, password } = await request.json();
 
-        // Look for user with matching username and password
-        const user = await User.findOne({ 
-            username: username,
-            password: password  // Note: In real apps, never store plain passwords!
-        });
+        // Validate input
+        if (!username || !password) {
+            return NextResponse.json({
+                success: false,
+                message: "Username and password are required"
+            }, { status: 400 });
+        }
+       
+        // Find user by username
+        const user = await User.findOne({ username });
+        
+        // Use generic error message to prevent username enumeration
+        if (!user) {
+            return NextResponse.json({
+                success: false,
+                message: "Invalid credentials"
+            }, { status: 401 });
+        }
 
-        // Return true if found, false if not
-        return NextResponse.json({ 
-            success: user ? true : false 
-        });
+        // Compare password with stored hash
+        const isValidPassword = await bcrypt.compare(password, user.password);
+        
+        if (!isValidPassword) {
+            return NextResponse.json({
+                success: false,
+                message: "Invalid credentials"
+            }, { status: 401 });
+        }
 
-    } catch (error) {
-        return NextResponse.json(
-            { success: false, error: "Login failed" },
-            { status: 400 }
+        // Generate JWT token
+        const token = jwt.sign(
+            { userId: user._id, username: user.username },
+            process.env.JWT_SECRET as string,
+            { expiresIn: '24h' }
         );
+
+        // Create response
+        const response = NextResponse.json({
+            success: true,
+            message: "Login successful"
+        }, { status: 200 });
+
+        // Set HTTP-only cookie
+        response.cookies.set({
+            name: 'auth_token',
+            value: token,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24 // 24 hours
+        });
+
+        return response;
+               
+    } catch (error) {
+        console.error("Error details:", error);
+        return NextResponse.json({
+            success: false,
+            error: "An error occurred during login"
+        }, { status: 500 });
     }
 }
-
-*/
