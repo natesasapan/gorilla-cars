@@ -113,7 +113,7 @@ export default function Home() {
 
       console.log(JSON.stringify(payload));
 
-      const response = await fetch(`/api/edititem?id=${updatedCar.id}`, {
+      const response = await fetch(`/api/editItem?id=${updatedCar.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
