@@ -23,11 +23,6 @@ interface Car {
 
 
 export default function Home() {
-  const hardcodedCars: Car[] = [
-    { name: "Ford Fiesta", price: "$20/day", image: fordImage },
-    { name: "BMW M2", price: "$80/day", image: m2Image },
-    { name: "Camaro SS", price: "$120/day", image: camaroImage },
-  ];
 
   const router = useRouter();
   const handleLogout = () => {
@@ -65,7 +60,7 @@ export default function Home() {
           image: car.imageLink || "/default-image.png",
         }));
     
-        setCars([...hardcodedCars, ...fetchedCars]); // Merge hardcoded and fetched data
+        setCars([...fetchedCars]); // Merge hardcoded and fetched data
       } catch (err) {
         console.error('Error fetching cars:', err);
         setError('Failed to load cars.');
@@ -115,6 +110,8 @@ export default function Home() {
           ? updatedCar.image 
           : updatedCar.image.src
       };
+
+      console.log(JSON.stringify(payload));
 
       const response = await fetch(`/api/edititem?id=${updatedCar.id}`, {
         method: 'PUT',
