@@ -137,7 +137,7 @@ export default function Home() {
     // Date validation
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
+  
     // Add time to the dates to prevent timezone issues
     const start = new Date(updatedCar.startDate + 'T00:00:00');
     const end = new Date(updatedCar.endDate + 'T00:00:00');
@@ -207,8 +207,8 @@ export default function Home() {
                 name: `${item.make} ${item.model}`,
                 year: item.year,
                 price: `$${item.price}/day`,
-                startDate: item.startDate,
-                endDate: item.endDate,
+                startDate: item.startDate?.split('T')[0] || '', // Format the date
+                endDate: item.endDate?.split('T')[0] || '',     // Format the date
                 image: item.imageLink || car.image
               } 
             : car
@@ -221,23 +221,30 @@ export default function Home() {
       alert('Failed to edit car. Please try again.');
     }
   };
-
+  
   const EditModal = ({ car, onSave, onClose }: { 
     car: Car; 
     onSave: (updatedCar: Car) => void; 
     onClose: () => void 
   }) => {
-    const [updatedCar, setUpdatedCar] = useState<Car>(car);
+    // Format the initial dates when creating the updatedCar state
+    const initialCar = {
+      ...car,
+      startDate: car.startDate ? new Date(car.startDate).toISOString().split('T')[0] : '',
+      endDate: car.endDate ? new Date(car.endDate).toISOString().split('T')[0] : ''
+    };
+    
+    const [updatedCar, setUpdatedCar] = useState<Car>(initialCar);
   
     const handleChange = (field: keyof Car, value: string) => {
       setUpdatedCar((prev) => ({ ...prev, [field]: value }));
     };
-
+  
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-orange-500 p-6 rounded shadow-lg w-1/3">
           <h2 className="text-xl font-bold mb-4 text-center">Edit Car</h2>
-    
+  
           <label htmlFor="car-name" className="block mb-2 font-semibold text-black">Name (Make Model):</label>
           <input
             id="car-name"
@@ -247,7 +254,7 @@ export default function Home() {
             className="border p-2 mb-4 w-full text-black"
             placeholder="Name (e.g., Toyota Corolla)"
           />
-
+  
           <label htmlFor="car-year" className="block mb-2 font-semibold text-black">Year:</label>
           <input
             id="car-year"
@@ -257,7 +264,7 @@ export default function Home() {
             className="border p-2 mb-4 w-full text-black"
             placeholder="Year (e.g., 2020)"
           />
-
+  
           <label htmlFor="start-date" className="block mb-2 font-semibold text-black">Available From:</label>
           <input
             id="start-date"
@@ -266,7 +273,7 @@ export default function Home() {
             onChange={(e) => handleChange('startDate', e.target.value)}
             className="border p-2 mb-4 w-full text-black"
           />
-
+  
           <label htmlFor="end-date" className="block mb-2 font-semibold text-black">Available Until:</label>
           <input
             id="end-date"
@@ -275,7 +282,7 @@ export default function Home() {
             onChange={(e) => handleChange('endDate', e.target.value)}
             className="border p-2 mb-4 w-full text-black"
           />
-    
+  
           <label htmlFor="car-price" className="block mb-2 font-semibold text-black">Price Per Day:</label>
           <input
             id="car-price"
@@ -285,7 +292,7 @@ export default function Home() {
             className="border p-2 mb-4 w-full text-black"
             placeholder="Price (e.g., $80/day)"
           />
-    
+  
           <label htmlFor="car-image" className="block mb-2 font-semibold text-black">Image URL:</label>
           <input
             id="car-image"
@@ -295,7 +302,7 @@ export default function Home() {
             className="border p-2 mb-4 w-full text-black"
             placeholder="Image URL"
           />
-    
+  
           <div className="flex justify-end space-x-4">
             <button
               onClick={() => onSave(updatedCar)}
